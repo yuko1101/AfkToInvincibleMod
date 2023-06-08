@@ -4,7 +4,7 @@
   "package": "io.github.yuko1101.afktoinvincible.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "EntitySelectorMixin"
+    "EntityMixin"
   ],
   "client": [
   ],
