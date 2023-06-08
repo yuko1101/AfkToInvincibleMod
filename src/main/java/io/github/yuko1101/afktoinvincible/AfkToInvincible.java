@@ -5,7 +5,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -14,13 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class AfkToInvincible implements ModInitializer {
 
     public static final String MOD_ID = "afk_to_invincible";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    public static AfkToInvincible INSTANCE;
 
     public static final int AFK_TICKS = 20 * 5;
 
@@ -29,6 +29,7 @@ public class AfkToInvincible implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        INSTANCE = this;
         LOGGER.info("AfkToInvincible initialized");
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             final List<ServerPlayer> players = server.getPlayerList().getPlayers();
@@ -56,16 +57,25 @@ public class AfkToInvincible implements ModInitializer {
             });
         });
 
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> !(entity instanceof Player && afkTicksMap.containsKey(entity.getUUID()) && afkTicksMap.get(entity.getUUID()) >= AFK_TICKS));
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> !(entity instanceof Player && getAfkTicks(entity.getUUID()) >= AFK_TICKS));
     }
 
     private void updateInvincible(ServerPlayer player, int afkTicks) {
-        if (afkTicks % 20 == 0) LOGGER.info(String.valueOf(afkTicks));
-        if (afkTicks >= AFK_TICKS) {
-            player.setInvulnerable(false);
-            Objects.requireNonNull(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(100000);
-        } else {
-            Objects.requireNonNull(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
-        }
+//        if (afkTicks % 20 == 0) LOGGER.info(String.valueOf(afkTicks));
+//        if (afkTicks >= AFK_TICKS) {
+//            player.setInvulnerable(false);
+//            Objects.requireNonNull(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(100000);
+//        } else {
+//            Objects.requireNonNull(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
+//        }
+    }
+
+    public int getAfkTicks(UUID uuid) {
+        if (!afkTicksMap.containsKey(uuid)) return 0;
+        return afkTicksMap.get(uuid);
+    }
+
+    public boolean isAfk(UUID uuid) {
+        return getAfkTicks(uuid) >= AFK_TICKS;
     }
 }
