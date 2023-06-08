@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "afk_to_invincible",
+  "version": "${version}",
+  "name": "AfkToInvincible",
+  "description": "A fabric mod that makes afk players invincible.",
+  "authors": [
+    "yuko1101"
+  ],
+  "contact": {
+    "website": "https://github.com/yuko1101/AfkToInvincibleMod#readme",
+    "repo": "https://github.com/yuko1101/AfkToInvincibleMod"
+  },
+  "license": "MIT",
+  "icon": "assets/afk_to_invincible/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "client": [
+      "io.github.yuko1101.afktoinvincible.client.AfkToInvincibleClient"
+    ],
+    "main": [
+      "io.github.yuko1101.afktoinvincible.AfkToInvincible"
+    ]
+  },
+  "mixins": [
+    "afk_to_invincible.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

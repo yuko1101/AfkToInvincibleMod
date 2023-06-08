@@ -1,3 +1,5 @@
+/run/
+
 .gradle
 **/build/
 !src/**/build/
