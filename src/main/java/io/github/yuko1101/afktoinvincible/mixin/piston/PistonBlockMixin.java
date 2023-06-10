@@ -21,6 +21,7 @@ public class PistonBlockMixin {
         if (AfkToInvincibleServer.INSTANCE != null) {
             final Box movedTo = state.getCollisionShape(world, pos.offset(direction)).getBoundingBox();
 
+            // TODO: 動くブロックの上に放置している人がいる場合も、ピストンが動かないようにする
             final boolean isAfkPlayerIn = world.getPlayers().stream().anyMatch(player -> {
                 if (!AfkToInvincible.isAfk(player.getUuid(), false)) return false;
                 final Box boundingBox = player.getBoundingBox();

@@ -19,6 +19,8 @@ public class AfkToInvincible implements ModInitializer {
 
     public static final Identifier AFK_PACKET_ID = new Identifier(MOD_ID, "is_afk");
 
+    public static final String AFK_ENABLED_MESSAGE = "%player%さんが放置状態になりました。";
+    public static final String AFK_DISABLED_MESSAGE = "%player%さんが放置状態から解除されました。";
 
     @Override
     public void onInitialize() {
