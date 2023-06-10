@@ -19,7 +19,7 @@ public class PistonBlockMixin {
     private static void isMovable(BlockState state, World world, BlockPos pos, Direction direction, boolean canBreak, Direction pistonDir, CallbackInfoReturnable<Boolean> cir) {
         // server side
         if (AfkToInvincibleServer.INSTANCE != null) {
-            final Box movedTo = new Box(pos.offset(direction));
+            final Box movedTo = state.getCollisionShape(world, pos.offset(direction)).getBoundingBox();
 
             final boolean isAfkPlayerIn = world.getPlayers().stream().anyMatch(player -> {
                 if (!AfkToInvincible.isAfk(player.getUuid(), false)) return false;
