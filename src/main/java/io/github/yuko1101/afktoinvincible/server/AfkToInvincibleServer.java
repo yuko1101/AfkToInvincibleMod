@@ -3,12 +3,10 @@ package io.github.yuko1101.afktoinvincible.server;
 import com.mojang.datafixers.util.Pair;
 import io.github.yuko1101.afktoinvincible.AfkToInvincible;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
@@ -20,12 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static io.github.yuko1101.afktoinvincible.AfkToInvincible.*;
+import static io.github.yuko1101.afktoinvincible.AfkToInvincible.AFK_PACKET_ID;
+import static io.github.yuko1101.afktoinvincible.AfkToInvincible.AFK_TICKS;
 
 public class AfkToInvincibleServer implements DedicatedServerModInitializer {
 
     public static AfkToInvincibleServer INSTANCE;
-    public static Team afkTeam;
 
     public static final HashMap<UUID, Integer> afkTicksMap = new HashMap<>();
     public static final HashMap<UUID, Pair<Vec3d, Vec2f>> lastStateMap = new HashMap<>();
@@ -70,15 +68,6 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
     }
 
     private void updateInvincible(ServerPlayerEntity player, boolean isAfk) {
-//        if (isAfk(player.getUUID())) {
-//            lastTeamMap.put(player.getUUID(), player.server.getScoreboard().getPlayersTeam(player.getScoreboardName()));
-//            player.server.getScoreboard().addPlayerToTeam(player.getScoreboardName(), afkTeam);
-//        } else if (lastTeamMap.get(player.getUUID()) == null) {
-//            player.server.getScoreboard().removePlayerFromTeam(player.getScoreboardName());
-//        } else {
-//            player.server.getScoreboard().addPlayerToTeam(player.getScoreboardName(), lastTeamMap.get(player.getUUID()));
-//            lastTeamMap.remove(player.getUUID());
-//        }
         sendPacketFromServer(player, isAfk);
         player.setInvulnerable(isAfk);
         player.setNoGravity(isAfk);

@@ -31,8 +31,6 @@ public class AfkToInvincibleClient implements ClientModInitializer {
     }
 
     public void registerPacketReceiver() {
-        ClientPlayNetworking.registerGlobalReceiver(AFK_PACKET_ID, (client, handler, buf, responseSender) -> {
-            isAfkClient = buf.readBoolean();
-        });
+        ClientPlayNetworking.registerGlobalReceiver(AFK_PACKET_ID, (client, handler, buf, responseSender) -> isAfkClient = buf.readBoolean());
     }
 }
