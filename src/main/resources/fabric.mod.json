@@ -13,10 +13,13 @@
   },
   "license": "MIT",
   "icon": "assets/afk_to_invincible/icon.png",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
     "client": [
       "io.github.yuko1101.afktoinvincible.client.AfkToInvincibleClient"
+    ],
+    "server": [
+      "io.github.yuko1101.afktoinvincible.server.AfkToInvincibleServer"
     ],
     "main": [
       "io.github.yuko1101.afktoinvincible.AfkToInvincible"
