@@ -26,7 +26,7 @@ public class AfkToInvincibleClient implements ClientModInitializer {
     public boolean isAfk(UUID uuid) {
         final PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null || player.getUuid() != uuid) return false;
-        AfkToInvincible.LOGGER.info(String.valueOf(isAfkClient));
+//        AfkToInvincible.LOGGER.info(String.valueOf(isAfkClient));
         return isAfkClient;
     }
 

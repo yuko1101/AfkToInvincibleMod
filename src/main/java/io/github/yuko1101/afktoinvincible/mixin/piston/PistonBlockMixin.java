@@ -28,16 +28,16 @@ public class PistonBlockMixin {
             if (movedTo.isEmpty()) {
                 movedTo.add(new Box(pos));
             }
-            AfkToInvincible.LOGGER.info("movedTo: " + movedTo);
+//            AfkToInvincible.LOGGER.info("movedTo: " + movedTo);
 
             final boolean isAfkPlayerIn = world.getPlayers().stream().anyMatch(player -> {
                 if (!AfkToInvincible.isAfk(player.getUuid(), false)) return false;
                 final Box boundingBox = player.getBoundingBox();
-                AfkToInvincible.LOGGER.info("player: " + boundingBox);
+//                AfkToInvincible.LOGGER.info("player: " + boundingBox);
                 return movedTo.stream().anyMatch(boundingBox::intersects);
             });
 
-            AfkToInvincible.LOGGER.info("isAfkPlayerIn: " + isAfkPlayerIn);
+//            AfkToInvincible.LOGGER.info("isAfkPlayerIn: " + isAfkPlayerIn);
 
             if (isAfkPlayerIn) cir.setReturnValue(false);
         }
