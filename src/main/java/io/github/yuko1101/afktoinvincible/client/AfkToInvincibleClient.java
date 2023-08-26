@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.UUID;
 
-import static io.github.yuko1101.afktoinvincible.AfkToInvincible.AFK_PACKET_ID;
+import static io.github.yuko1101.afktoinvincible.AfkToInvincible.*;
 
 public class AfkToInvincibleClient implements ClientModInitializer {
 
@@ -32,5 +32,6 @@ public class AfkToInvincibleClient implements ClientModInitializer {
 
     public void registerPacketReceiver() {
         ClientPlayNetworking.registerGlobalReceiver(AFK_PACKET_ID, (client, handler, buf, responseSender) -> isAfkClient = buf.readBoolean());
+        ClientPlayNetworking.registerGlobalReceiver(AFK_TIMEOUT_PACKET_ID, (client, handler, buf, responseSender) -> AFK_TICKS = buf.readInt());
     }
 }

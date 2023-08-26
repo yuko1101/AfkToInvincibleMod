@@ -1,35 +1,38 @@
 package io.github.yuko1101.afktoinvincible.server;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import io.github.yuko1101.afktoinvincible.AfkToInvincible;
 import io.github.yuko1101.afktoinvincible.commands.AfkCommand;
+import io.github.yuko1101.afktoinvincible.commands.AfkConfigCommand;
+import io.github.yuko1101.afktoinvincible.utils.ConfigFile;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 import static io.github.yuko1101.afktoinvincible.AfkToInvincible.*;
 
 public class AfkToInvincibleServer implements DedicatedServerModInitializer {
 
     public static AfkToInvincibleServer INSTANCE;
+
+    public static ConfigFile configFile;
 
     public static final HashMap<UUID, Integer> afkTicksMap = new HashMap<>();
     public static final HashMap<UUID, Pair<Vec3d, Vec2f>> lastStateMap = new HashMap<>();
@@ -40,7 +43,15 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         INSTANCE = this;
 
+        try {
+            configFile = new ConfigFile(new File("config/afk_to_invincible.json"), new JsonObject()).load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        AFK_TICKS = configFile.has("afkTimeout") ? configFile.getValue("afkTimeout").getAsInt() : AFK_TICKS;
+
         CommandRegistrationCallback.EVENT.register(new AfkCommand()::register);
+        CommandRegistrationCallback.EVENT.register(new AfkConfigCommand()::register);
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             final List<ServerPlayerEntity> players = server.getPlayerManager().getPlayerList();
@@ -82,13 +93,18 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
+            sendAfkTimeoutPacketFromServer(server.getPlayerManager().getPlayerList(), AFK_TICKS);
+        });
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            sendAfkTimeoutPacketFromServer(List.of(handler.getPlayer()), AFK_TICKS);
         });
 
         AfkToInvincible.LOGGER.info("AfkToInvincible initialized for server");
     }
 
-    private void updateInvincible(ServerPlayerEntity player, boolean isAfk, boolean isInitialUpdate) {
-        sendPacketFromServer(player, isAfk);
+    public void updateInvincible(ServerPlayerEntity player, boolean isAfk, boolean isInitialUpdate) {
+        sendIsAfkPacketFromServer(player, isAfk);
         player.setInvulnerable(isAfk);
         player.setNoGravity(isAfk);
         if (!isInitialUpdate) {
@@ -110,10 +126,19 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
         return afkTicksMap.keySet().stream().filter(this::isAfk).map(server.getPlayerManager()::getPlayer).toList();
     }
 
-    public void sendPacketFromServer(ServerPlayerEntity player, boolean isAfk) {
+    public void sendIsAfkPacketFromServer(ServerPlayerEntity player, boolean isAfk) {
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeBoolean(isAfk);
 
         ServerPlayNetworking.send(player, AFK_PACKET_ID, buf);
+    }
+
+    public void sendAfkTimeoutPacketFromServer(List<ServerPlayerEntity> players, int timeout) {
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeInt(timeout);
+
+        for (ServerPlayerEntity player : players) {
+            ServerPlayNetworking.send(player, AFK_TIMEOUT_PACKET_ID, buf);
+        }
     }
 }
