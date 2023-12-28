@@ -18,7 +18,7 @@ public class AfkCommand extends CommandBase {
         final ServerCommandSource source = context.getSource();
         final List<String> afkPlayers = AfkToInvincibleServer.INSTANCE.getAfkPlayers().stream().map(player -> player.getName().getString()).toList();
 
-        source.sendFeedback(() -> Text.literal("AFK: " + String.join(", ", afkPlayers)), false);
+        source.sendFeedback(Text.literal("AFK: " + String.join(", ", afkPlayers)), false);
 
         return SINGLE_SUCCESS;
     }

@@ -31,7 +31,7 @@ public class AfkConfigCommand extends CommandBase {
                         literal("afkTimeout").then(
                                 argument("timeout", IntegerArgumentType.integer(1)).executes(ctx -> setAfkTimeout(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "timeout")))
                         ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(() -> Text.literal("Current afk timeout is " + AFK_TICKS + " ticks."), false);
+                            ctx.getSource().sendFeedback(Text.literal("Current afk timeout is " + AFK_TICKS + " ticks."), false);
                             return SINGLE_SUCCESS;
                         })
                 )
@@ -58,7 +58,7 @@ public class AfkConfigCommand extends CommandBase {
             AfkToInvincibleServer.INSTANCE.updateInvincible(player, false, false);
         }
 
-        source.sendFeedback(() -> Text.literal("Set afk timeout to " + timeout + " ticks." + "\n" + "All afk players are no longer invincible to apply new timeout."), false);
+        source.sendFeedback(Text.literal("Set afk timeout to " + timeout + " ticks." + "\n" + "All afk players are no longer invincible to apply new timeout."), false);
 
         return SINGLE_SUCCESS;
     }
