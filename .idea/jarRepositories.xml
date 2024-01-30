@@ -41,5 +41,15 @@
       <option name="name" value="Mojang" />
       <option name="url" value="https://libraries.minecraft.net/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="LoomLocalRemappedMods" />
+      <option name="name" value="LoomLocalRemappedMods" />
+      <option name="url" value="file:/$PROJECT_DIR$/../../../seo%20won%20seok2/IdeaProjects/AfkToInvincibleMod/.gradle/loom-cache/remapped_mods/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="LoomLocalMinecraft" />
+      <option name="name" value="LoomLocalMinecraft" />
+      <option name="url" value="file:/$PROJECT_DIR$/../../../seo%20won%20seok2/IdeaProjects/AfkToInvincibleMod/.gradle/loom-cache/minecraftMaven/" />
+    </remote-repository>
   </component>
 </project>
