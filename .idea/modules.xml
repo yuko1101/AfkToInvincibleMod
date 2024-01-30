@@ -7,6 +7,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/AfkToInvincible.test.iml" filepath="$PROJECT_DIR$/.idea/modules/AfkToInvincible.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincible.main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincible.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincible.test.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincible.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincibleMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincibleMod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincibleMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.yuko1101.AfkToInvincibleMod.test.iml" />
     </modules>
   </component>
 </project>
