@@ -56,6 +56,11 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             final List<ServerPlayerEntity> players = server.getPlayerManager().getPlayerList();
             players.forEach(player -> {
+                if (!isAfkEnabled(player.getUuid())) {
+                    afkTicksMap.remove(player.getUuid());
+                    lastStateMap.remove(player.getUuid());
+                    return;
+                }
                 if (!afkTicksMap.containsKey(player.getUuid())) {
                     afkTicksMap.put(player.getUuid(), 0);
                     updateInvincible(player, false, true);
@@ -119,7 +124,7 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
     }
 
     public boolean isAfk(UUID uuid) {
-        return getAfkTicks(uuid) >= AFK_TICKS;
+        return getAfkTicks(uuid) >= AFK_TICKS && isAfkEnabled(uuid);
     }
 
     public List<ServerPlayerEntity> getAfkPlayers() {
@@ -140,5 +145,29 @@ public class AfkToInvincibleServer implements DedicatedServerModInitializer {
         for (ServerPlayerEntity player : players) {
             ServerPlayNetworking.send(player, AFK_TIMEOUT_PACKET_ID, buf);
         }
+    }
+
+    public boolean isAfkEnabled(UUID uuid) {
+        try {
+            return configFile.get("players").get(uuid.toString()).getValue("isEnabled").getAsBoolean();
+        } catch (Exception e) {
+            return true; // enabled by default
+        }
+    }
+
+    public void setAfkEnabled(ServerPlayerEntity player, boolean isEnabled) {
+        if (!configFile.has("players")) configFile.set("players", new JsonObject());
+        if (!configFile.get("players").has(player.getUuid().toString())) configFile.get("players").set(player.getUuid().toString(), new JsonObject());
+
+        boolean wasAfk = isAfk(player.getUuid());
+        configFile.get("players").get(player.getUuid().toString()).set("isEnabled", isEnabled);
+        boolean isAfk = isAfk(player.getUuid());
+        if (wasAfk != isAfk) updateInvincible(player, isAfk, false);
+
+        try {
+            configFile.save();
+        } catch (Exception ignored) { }
+
+
     }
 }
