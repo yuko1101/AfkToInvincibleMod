@@ -20,8 +20,7 @@ import java.util.List;
 public class PistonBlockMixin {
     @Inject(method = "isMovable", at = @At("HEAD"), cancellable = true)
     private static void isMovable(BlockState state, World world, BlockPos pos, Direction direction, boolean canBreak, Direction pistonDir, CallbackInfoReturnable<Boolean> cir) {
-        // server side
-        if (AfkToInvincibleServer.INSTANCE != null) {
+        if (!world.isClient) {
             // TODO: それぞれのboxをピストンの向きと反対方向に移動させたboxとunionを使って統合させることで、ピストンの動きによる当たり判定の伸び(当たり判定の移動を考えたときの当たり判定)を無理やり処理している。もっと良い方法を考える。
             final List<Box> movedTo = new ArrayList<>(state.getCollisionShape(world, pos).getBoundingBoxes().stream().map(box -> box.union(box.offset(new BlockPos(0, 0, 0).offset(direction.getOpposite())))).map(box -> box.offset(pos.offset(direction))).toList());
             // TODO: ピストンの押し出し部の当たり判定が何故かなくなったりするため、当たり判定を無理やり作っていが、もっと良い方法を考える。

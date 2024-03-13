@@ -6,7 +6,6 @@ import io.github.yuko1101.afktoinvincible.AfkToInvincible;
 import io.github.yuko1101.afktoinvincible.commands.AfkCommand;
 import io.github.yuko1101.afktoinvincible.commands.AfkConfigCommand;
 import io.github.yuko1101.afktoinvincible.utils.ConfigFile;
-import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -28,21 +27,15 @@ import java.util.UUID;
 
 import static io.github.yuko1101.afktoinvincible.AfkToInvincible.*;
 
-public class AfkToInvincibleServer implements DedicatedServerModInitializer {
+public class AfkToInvincibleServer {
+    public ConfigFile configFile;
 
-    public static AfkToInvincibleServer INSTANCE;
-
-    public static ConfigFile configFile;
-
-    public static final HashMap<UUID, Integer> afkTicksMap = new HashMap<>();
-    public static final HashMap<UUID, Pair<Vec3d, Vec2f>> lastStateMap = new HashMap<>();
+    public final HashMap<UUID, Integer> afkTicksMap = new HashMap<>();
+    public final HashMap<UUID, Pair<Vec3d, Vec2f>> lastStateMap = new HashMap<>();
 
     public MinecraftServer server;
 
-    @Override
-    public void onInitializeServer() {
-        INSTANCE = this;
-
+    public void init() {
         try {
             configFile = new ConfigFile(new File("config/afk_to_invincible.json"), new JsonObject()).load();
         } catch (IOException e) {

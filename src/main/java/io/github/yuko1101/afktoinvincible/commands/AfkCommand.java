@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.yuko1101.afktoinvincible.AfkToInvincible;
 import io.github.yuko1101.afktoinvincible.server.AfkToInvincibleServer;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -33,7 +34,7 @@ public class AfkCommand extends CommandBase {
                                             final ServerCommandSource source = ctx.getSource();
                                             final String playerName = StringArgumentType.getString(ctx, "player");
                                             final ServerPlayerEntity player = source.getServer().getPlayerManager().getPlayer(playerName);
-                                            AfkToInvincibleServer.INSTANCE.setAfkEnabled(player, true);
+                                            AfkToInvincible.INSTANCE.serverManager.setAfkEnabled(player, true);
 
                                             source.sendFeedback(() -> Text.literal("Enabled AFK detection for " + playerName), false);
                                             return SINGLE_SUCCESS;
@@ -44,7 +45,7 @@ public class AfkCommand extends CommandBase {
                             ctx -> {
                                 final ServerCommandSource source = ctx.getSource();
                                 if (source.getPlayer() == null) return SINGLE_SUCCESS;
-                                AfkToInvincibleServer.INSTANCE.setAfkEnabled(source.getPlayer(), true);
+                                AfkToInvincible.INSTANCE.serverManager.setAfkEnabled(source.getPlayer(), true);
 
                                 source.sendFeedback(() -> Text.literal("Enabled AFK detection."), false);
                                 return SINGLE_SUCCESS;
@@ -58,7 +59,7 @@ public class AfkCommand extends CommandBase {
                                             final ServerCommandSource source = ctx.getSource();
                                             final String playerName = StringArgumentType.getString(ctx, "player");
                                             final ServerPlayerEntity player = source.getServer().getPlayerManager().getPlayer(playerName);
-                                            AfkToInvincibleServer.INSTANCE.setAfkEnabled(player, false);
+                                            AfkToInvincible.INSTANCE.serverManager.setAfkEnabled(player, false);
 
                                             source.sendFeedback(() -> Text.literal("Enabled AFK detection for " + playerName), false);
                                             return SINGLE_SUCCESS;
@@ -69,7 +70,7 @@ public class AfkCommand extends CommandBase {
                                 ctx -> {
                                     final ServerCommandSource source = ctx.getSource();
                                     if (source.getPlayer() == null) return SINGLE_SUCCESS;
-                                    AfkToInvincibleServer.INSTANCE.setAfkEnabled(source.getPlayer(), false);
+                                    AfkToInvincible.INSTANCE.serverManager.setAfkEnabled(source.getPlayer(), false);
 
                                     source.sendFeedback(() -> Text.literal("Disabled AFK detection."), false);
                                     return SINGLE_SUCCESS;
@@ -79,7 +80,7 @@ public class AfkCommand extends CommandBase {
                 .executes(
                         ctx -> {
                             final ServerCommandSource source = ctx.getSource();
-                            final List<String> afkPlayers = AfkToInvincibleServer.INSTANCE.getAfkPlayers().stream().map(player -> player.getName().getString()).toList();
+                            final List<String> afkPlayers = AfkToInvincible.INSTANCE.serverManager.getAfkPlayers().stream().map(player -> player.getName().getString()).toList();
 
                             source.sendFeedback(() -> Text.literal("AFK: " + String.join(", ", afkPlayers)), false);
 

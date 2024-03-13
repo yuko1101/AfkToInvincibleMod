@@ -46,16 +46,16 @@ public class AfkConfigCommand extends CommandBase {
 
     public int setAfkTimeout(ServerCommandSource source, int timeout) {
         AfkToInvincible.AFK_TICKS = timeout;
-        AfkToInvincibleServer.INSTANCE.sendAfkTimeoutPacketFromServer(AfkToInvincibleServer.INSTANCE.server.getPlayerManager().getPlayerList(), AFK_TICKS);
-        AfkToInvincibleServer.configFile.set("afkTimeout", timeout);
+        AfkToInvincible.INSTANCE.serverManager.sendAfkTimeoutPacketFromServer(AfkToInvincible.INSTANCE.serverManager.server.getPlayerManager().getPlayerList(), AFK_TICKS);
+        AfkToInvincible.INSTANCE.serverManager.configFile.set("afkTimeout", timeout);
         try {
-            AfkToInvincibleServer.configFile.save();
+            AfkToInvincible.INSTANCE.serverManager.configFile.save();
         } catch (Exception ignored) { }
 
         // force remove afk invincible from all players
-        AfkToInvincibleServer.afkTicksMap.clear();
-        for (ServerPlayerEntity player : AfkToInvincibleServer.INSTANCE.server.getPlayerManager().getPlayerList()) {
-            AfkToInvincibleServer.INSTANCE.updateInvincible(player, false, false);
+        AfkToInvincible.INSTANCE.serverManager.afkTicksMap.clear();
+        for (ServerPlayerEntity player : AfkToInvincible.INSTANCE.serverManager.server.getPlayerManager().getPlayerList()) {
+            AfkToInvincible.INSTANCE.serverManager.updateInvincible(player, false, false);
         }
 
         source.sendFeedback(() -> Text.literal("Set afk timeout to " + timeout + " ticks." + "\n" + "All afk players are no longer invincible to apply new timeout."), false);

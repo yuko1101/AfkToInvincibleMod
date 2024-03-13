@@ -18,9 +18,6 @@
     "client": [
       "io.github.yuko1101.afktoinvincible.client.AfkToInvincibleClient"
     ],
-    "server": [
-      "io.github.yuko1101.afktoinvincible.server.AfkToInvincibleServer"
-    ],
     "main": [
       "io.github.yuko1101.afktoinvincible.AfkToInvincible"
     ]
